@@ -42,7 +42,7 @@ get_joplin() {
                 linenum=$(( linenum + 1 ))
             done <<< "$titles"
         )
-        content=$( echo -e "$content" | sed -E 's/^([^ .#:-]+)$/**\1**/' ) # Make single lines without interpunction bold
+        content=$( echo -e "$content" | sed -E 's/^([^ .#:-]+)$/**\1**/' ) # Make single lines without punctuation bold
         content=$( echo -e "$content" | sed -E 's/^# (.*)$/**\1**/' ) # Replace headings with bold
         content=$( echo -e "$content" | sed -E 's/(.+)/\n\1/g' ) # Add newline to every line
         echo -e "$content"
