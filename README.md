@@ -1,4 +1,4 @@
-# Daily Memories
+# Immich & Joplin memories
 
 This bash script obtains immich memories and joplin notes of this date in the past, combines them, and sends them as an email.
 Works on my machine™.
