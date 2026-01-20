@@ -44,7 +44,7 @@ Description=Send daily memories mail
 
 [Service]
 Type=oneshot
-ExecStart=/bin/bash "/path/to/daily_memories.sh"
+ExecStart=/bin/bash "/path/to/immich_joplin_memories.sh"
 ```
 
 daily_memories.timer (you can adjust the time to your liking): 
