@@ -18,34 +18,39 @@ date2=$( date +"%Y-%m-%d" )
 
 ### Obtain Joplin notes on this date
 get_joplin() {
-    year=$1
-    daysago=$(( $1 * 365 ))
-    result=$( curl -s "${joplin_address}/search?query=created:day-${daysago}%20-created:day-$(( $daysago - 1 ))&fields=title,body" ) # Get results from Joplin
-    titles=$( echo "${result}" | grep -oP "(?<=\"title\":\").*?(?=\",)" ) # Get titles from json result
-    found=$( if [ $? -ne 1 ]; then echo "true"; else echo "false"; fi ) # Check if there are any results
-    titles=$( echo "${titles}" | sed 's/\%/\%\%/g' ) # Escape %
-    bodies=$( echo "${result}" | grep -oP "(?<=\"body\":\").*?(?=\"})" ) # Get bodies from json result
-    bodies=$( echo "${bodies}" | sed 's/\n*!\[\](dayone-moment:.*)//g' ) # Remove references to day one photos
-    bodies=$( echo "${bodies}" | sed 's/\%/\%\%/g' ) # Escape %
-    bodies=$( echo "${bodies}" | awk '{$1=$1};1' ) # Remove leadings & trailing whitespace
-    if [[ "$found" == true ]]; then
-        content=$( 
-            printf "## $i $( if [[ "$i" == 1 ]]; then echo -n "year"; else echo -n "years"; fi ) ago:\n"
-            linenum=1
-            while read line; do
-                if [[ ${linenum} != 1 ]]; then
-                    printf "\n\n%s\n" "### $line"
-                else
-                    printf "%s\n" "### $line"
-                fi
-                printf "$(sed -n ${linenum}p <<< "$bodies")"
-                linenum=$(( linenum + 1 ))
-            done <<< "$titles"
-        )
-        content=$( echo -e "$content" | sed -E 's/^([^ .#:-]+)$/**\1**/' ) # Make single lines without punctuation bold
-        content=$( echo -e "$content" | sed -E 's/^# (.*)$/**\1**/' ) # Replace headings with bold
-        content=$( echo -e "$content" | sed -E 's/(.+)/\n\1/g' ) # Add newline to every line
-        echo -e "$content"
+    if ( ! curl -q "${joplin_address}" > /dev/null 2>&1 ); then 
+        echo "Error: could not connect to joplin api."
+        exit 1
+    else
+        year=$1
+        daysago=$(( $1 * 365 ))
+        result=$( curl -s "${joplin_address}/search?query=created:day-${daysago}%20-created:day-$(( $daysago - 1 ))&fields=title,body" ) # Get results from Joplin
+        titles=$( echo "${result}" | grep -oP "(?<=\"title\":\").*?(?=\",)" ) # Get titles from json result
+        found=$( if [ $? -ne 1 ]; then echo "true"; else echo "false"; fi ) # Check if there are any results
+        titles=$( echo "${titles}" | sed 's/\%/\%\%/g' ) # Escape %
+        bodies=$( echo "${result}" | grep -oP "(?<=\"body\":\").*?(?=\"})" ) # Get bodies from json result
+        bodies=$( echo "${bodies}" | sed 's/\n*!\[\](dayone-moment:.*)//g' ) # Remove references to day one photos
+        bodies=$( echo "${bodies}" | sed 's/\%/\%\%/g' ) # Escape %
+        bodies=$( echo "${bodies}" | awk '{$1=$1};1' ) # Remove leadings & trailing whitespace
+        if [[ "$found" == true ]]; then
+            content=$( 
+                printf "## $i $( if [[ "$i" == 1 ]]; then echo -n "year"; else echo -n "years"; fi ) ago:\n"
+                linenum=1
+                while read line; do
+                    if [[ ${linenum} != 1 ]]; then
+                        printf "\n\n%s\n" "### $line"
+                    else
+                        printf "%s\n" "### $line"
+                    fi
+                    printf "$(sed -n ${linenum}p <<< "$bodies")"
+                    linenum=$(( linenum + 1 ))
+                done <<< "$titles"
+            )
+            content=$( echo -e "$content" | sed -E 's/^([^ .#:-]+)$/**\1**/' ) # Make single lines without punctuation bold
+            content=$( echo -e "$content" | sed -E 's/^# (.*)$/**\1**/' ) # Replace headings with bold
+            content=$( echo -e "$content" | sed -E 's/(.+)/\n\1/g' ) # Add newline to every line
+            echo -e "$content"
+        fi
     fi
 }
 
