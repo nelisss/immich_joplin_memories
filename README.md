@@ -5,7 +5,7 @@ Works on my machine™.
 
 ## Assumptions
 
-- Immich server container running on the same host as the script is being run from.
+- Immich server docker container running on the same host as the script is being run from.
 - Joplin data accessible through [rickonono3/joplin-terminal-data-api](https://hub.docker.com/r/rickonono3/joplin-terminal-data-api).
 - Ability to send mail through the mail command, for example after setting up SMTP.
 - Pandoc cli installed to convert md to html.
