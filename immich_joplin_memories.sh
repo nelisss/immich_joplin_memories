@@ -1,4 +1,5 @@
 #!/bin/bash
+set -e
 
 ### Obtain variables from .env
 source .env
