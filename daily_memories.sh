@@ -82,7 +82,7 @@ $( get_immich )
 # On this day in Joplin:
 
 $( 
-for i in $(seq 1 15); do
+for i in $(seq 1 25); do
     get_joplin $i 
 done 
 )
