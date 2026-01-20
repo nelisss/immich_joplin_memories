@@ -2,7 +2,16 @@
 set -e
 
 ### Obtain variables from .env
-source .env
+if [[ ! -f .env ]]; then
+    if [[ ! -f ${HOME}/.config/immich_joplin_memories/.env ]]; then
+        echo "Error: no .env found in current directory or in ~/.config/immich_joplin_memories."
+        exit 1
+    else
+        source ${HOME}/.config/immich_joplin_memories/.env
+    fi
+else
+    source .env
+fi
 
 date1=$( date +"%A %d %B %Y" )
 date2=$( date +"%Y-%m-%d" )

@@ -32,6 +32,8 @@ Works on my machine™.
     ./immich_joplin_memories.sh
     ```
 
+Note: an .env file is required. The script will look for .env in the current directory. If it does not exist, it looks for .env in ~/.config/immich_joplin_memories.
+
 ### Get daily memories using a systemd service
 
 Install a systemd service and timer to run the script daily.
